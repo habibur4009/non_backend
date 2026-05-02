@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
-from firebase_admin.auth import InvalidIdTokenError, ExpiredIdTokenError
+
 from django.contrib.auth import authenticate
 from django.utils import timezone
 
@@ -12,7 +12,7 @@ from .serializers import (
     SignInRequestSerializer, SignUpSerializer, SignInSerializer,
     UserSerializer, AuthResponseSerializer
 )
-from .firebase import verify_firebase_token
+
 
 
 def get_tokens_for_user(user):
@@ -128,14 +128,14 @@ class SignInView(GenericAPIView):
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        id_token = serializer.validated_data['id_token']
+        #id_token = serializer.validated_data['id_token']
 
-        try:
-            decoded_token = verify_firebase_token(id_token)
-        except ExpiredIdTokenError:
-            return Response({'detail': 'Firebase token has expired.'}, status=status.HTTP_401_UNAUTHORIZED)
-        except InvalidIdTokenError:
-            return Response({'detail': 'Invalid Firebase token.'}, status=status.HTTP_401_UNAUTHORIZED)
+       # try:
+            
+       # except ExpiredIdTokenError:
+          #  return Response({'detail': 'Firebase token has expired.'}, status=status.HTTP_401_UNAUTHORIZED)
+        #except InvalidIdTokenError:
+          #  return Response({'detail': 'Invalid Firebase token.'}, status=status.HTTP_401_UNAUTHORIZED)
 
         phone_number = decoded_token.get('phone_number')
         if not phone_number:
